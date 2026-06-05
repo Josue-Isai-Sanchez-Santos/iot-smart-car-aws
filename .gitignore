@@ -1,0 +1,21 @@
+# Credenciales y archivos sensibles
+secrets.h
+*.pem
+*.key
+*.crt
+.env
+.env.*
+
+# Dependencias
+node_modules/
+
+# Configuración del editor
+.vscode/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Compilaciones de Arduino y ESP32
+build/
+*.bin
