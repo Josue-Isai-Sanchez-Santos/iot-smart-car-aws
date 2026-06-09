@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--
+  Página principal del panel de control (Smart Car Dashboard).
+  Comentarios añadidos en español para facilitar la comprensión
+  de la estructura HTML y los elementos interactivos.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Car Dashboard</title>
+
+  <!-- Enlace al archivo de estilos que define la apariencia del dashboard -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <!-- Barra superior con título y estado de conexión (simulación / real) -->
+  <header class="topbar">
+    <div>
+      <!-- Título principal de la interfaz -->
+      <h1>Smart Car Dashboard</h1>
+      <p>Panel de control IoT</p>
+    </div>
+
+    <!-- Indicador de estado: usado para mostrar si estamos en simulación/online -->
+    <div id="connection-status" class="status status-online">
+      <span class="status-dot"></span>
+      Simulación activa
+    </div>
+  </header>
+
+  <!-- Contenedor principal con las tarjetas (camera, telemetría, controles, historial) -->
+  <main class="dashboard">
+    <!-- Tarjeta de cámara: aquí se integraría la transmisión de video si existiera -->
+    <section class="card camera-card">
+      <div class="card-header">
+        <h2>Cámara</h2>
+      </div>
+
+      <!-- Placeholder visual para la cámara (mejorar si se añade stream real) -->
+      <div class="camera-placeholder">
+        <span>Transmisión de video pendiente</span>
+      </div>
+    </section>
+
+    <!-- Tarjeta de telemetría: muestra valores en tiempo real del vehículo -->
+    <section class="card telemetry-card">
+      <div class="card-header">
+        <h2>Telemetría</h2>
+      </div>
+
+      <div class="telemetry-grid">
+        <!-- Movimiento: texto legible (Adelante, Atrás, Detenido, etc.) -->
+        <div class="telemetry-item">
+          <span class="telemetry-label">Movimiento</span>
+          <strong id="movement-value">Detenido</strong>
+        </div>
+
+        <!-- Velocidad en porcentaje (0-100) -->
+        <div class="telemetry-item">
+          <span class="telemetry-label">Velocidad</span>
+          <strong><span id="speed-value">60</span> %</strong>
+        </div>
+
+        <!-- Distancia frontal medida en centímetros -->
+        <div class="telemetry-item">
+          <span class="telemetry-label">Distancia frontal</span>
+          <strong><span id="distance-value">100</span> cm</strong>
+        </div>
+
+        <!-- Modo: indica si estamos en simulación o conectado a AWS -->
+        <div class="telemetry-item">
+          <span class="telemetry-label">Modo</span>
+          <strong id="mode-value">Simulación</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tarjeta de controles: botones direccionales, control de velocidad y emergencia -->
+    <section class="card controls-card">
+      <div class="card-header">
+        <h2>Controles</h2>
+      </div>
+
+      <!-- Teclado direccional en pantalla. Los botones tienen `data-action` para identificar la acción enviada -->
+      <div class="direction-pad">
+        <button class="control-button direction-button"
+                data-action="adelante"
+                aria-label="Avanzar">
+          ▲
+        </button>
+
+        <div class="direction-row">
+          <button class="control-button direction-button"
+                  data-action="izquierda"
+                  aria-label="Girar a la izquierda">
+            ◀
+          </button>
+
+          <!-- Botón para detener el vehículo inmediatamente -->
+          <button id="stop-button"
+                  class="control-button stop-button"
+                  aria-label="Detener">
+            STOP
+          </button>
+
+          <button class="control-button direction-button"
+                  data-action="derecha"
+                  aria-label="Girar a la derecha">
+            ▶
+          </button>
+        </div>
+
+        <button class="control-button direction-button"
+                data-action="atras"
+                aria-label="Retroceder">
+          ▼
+        </button>
+      </div>
+
+      <!-- Control deslizante para ajustar la velocidad; actualizado por JS en tiempo real -->
+      <div class="speed-control">
+        <label for="speed-range">
+          Velocidad:
+          <strong><span id="speed-label">60</span> %</strong>
+        </label>
+
+        <input id="speed-range"
+               type="range"
+               min="0"
+               max="100"
+               value="60">
+      </div>
+
+      <!-- Botón de emergencia que envía la acción `emergencia` al backend/simulador -->
+      <button id="emergency-button" class="emergency-button">
+        Parada de emergencia
+      </button>
+
+      <p class="keyboard-help">
+        También puedes usar WASD o las flechas del teclado.
+      </p>
+    </section>
+
+    <!-- Historial de comandos enviados; el JS añade entradas cuando se ejecutan acciones -->
+    <section class="card history-card">
+      <div class="card-header history-header">
+        <h2>Historial de comandos</h2>
+
+        <button id="clear-history-button" class="secondary-button">
+          Limpiar
+        </button>
+      </div>
+
+      <ul id="command-history" class="command-history">
+        <li>No se han enviado comandos.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Los scripts se cargan al final del body para que el DOM ya exista cuando se ejecuten -->
+  <!-- simulator.js: lógica de simulación local (estado y respuesta a comandos) -->
+  <script src="js/simulator.js"></script>
+  <!-- api.js: adaptador para enviar comandos al simulador o a AWS según `API_MODE` -->
+  <script src="js/api.js"></script>
+  <!-- app.js: código de interacción UI, eventos y actualización del dashboard -->
+  <script src="js/app.js"></script>
+</body>
+</html>
