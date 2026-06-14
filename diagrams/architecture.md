@@ -122,16 +122,16 @@ Los certificados, claves privadas y contraseñas no se almacenarán en GitHub.
 
 La página web no tendrá acceso directo a los certificados privados del dispositivo.
 
-## 9. Arquitectura temporal de simulación
+## 9. Arquitectura actual implementada
 
-Antes de integrar AWS, el sistema funciona localmente:
+La etapa actualmente implementada valida la comunicación entre la página web y AWS mediante API Gateway y Lambda.
 
 ```mermaid
 flowchart TD
-    A[index.html<br>Panel de control] --> B[simulator.js]
-    B --> C[Estado simulado]
-    C --> D[localStorage]
-    D --> E[monitor.html<br>Vista de solo lectura]
+    A[GitHub Pages<br>Panel web] --> B[Amazon API Gateway<br>POST /commands]
+    B --> C[AWS Lambda<br>iot-smart-car-command]
+    C --> D[Respuesta JSON simulada]
+    D --> A
 ```
 
 Esta etapa permite comprobar:

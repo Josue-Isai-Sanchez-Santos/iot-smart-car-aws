@@ -51,3 +51,18 @@
 - [ ] Validar comunicación ESP32 con Arduino UNO.
 - [ ] Validar conexión MQTT con AWS IoT Core.
 - [ ] Validar parada automática por pérdida de conexión.
+
+#### Pruebas de AWS API Gateway + Lambda
+
+- [x] Lambda ejecuta correctamente con evento de prueba.
+- [x] Lambda valida acciones permitidas.
+- [x] Lambda responde con `ok: true` para comandos válidos.
+- [x] API Gateway fue creado correctamente.
+- [x] API Gateway tiene la ruta `POST /commands`.
+- [x] API Gateway invoca la función Lambda.
+- [x] CORS permite llamadas desde GitHub Pages.
+- [x] PowerShell recibe respuesta `StatusCode: 200`.
+- [x] GitHub Pages envía peticiones reales a API Gateway.
+- [x] DevTools muestra `OPTIONS /commands` con estado `204`.
+- [x] DevTools muestra `POST /commands` con estado `200`.
+- [x] El dashboard muestra `AWS Lambda Simulada`.

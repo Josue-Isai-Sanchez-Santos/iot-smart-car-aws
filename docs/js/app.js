@@ -117,17 +117,20 @@ function updateDashboard(response) {
   speedValue.textContent = state.speed;
   distanceValue.textContent = state.distanceCm;
 
-  document.getElementById("mode-value").textContent = state.mode ?? "Simulación";
+  const mode = state.mode ?? "Simulación";
 
-saveCarState({
-  online: state.online ?? true,
-  movement: state.movement,
-  speed: state.speed,
-  distanceCm: state.distanceCm,
-  mode: state.mode ?? "Simulación"
-});
+  document.getElementById("mode-value").textContent = mode;
 
-renderControlHistory();
+  const connectionStatus = document.getElementById("connection-status");
+  connectionStatus.innerHTML = '<span class="status-dot"></span> ' + mode;
+
+  saveCarState({
+    online: state.online ?? true,
+    movement: state.movement,
+    speed: state.speed,
+    distanceCm: state.distanceCm,
+    mode
+  });
 }
 
 /**

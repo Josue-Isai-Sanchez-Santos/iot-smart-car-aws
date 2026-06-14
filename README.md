@@ -20,7 +20,7 @@ https://josue-isai-sanchez-santos.github.io/iot-smart-car-aws/monitor.html
 
 ## Estado actual
 
-Primera etapa completada:
+Etapa web y backend simulado completada:
 
 - Panel web funcional.
 - Controles táctiles.
@@ -28,11 +28,14 @@ Primera etapa completada:
 - Ajuste de velocidad.
 - Historial de comandos.
 - Botón de parada de emergencia.
-- Modo simulación.
+- Modo simulación local.
 - Diseño adaptable para celular y computadora.
 - Publicación mediante GitHub Pages.
 - Vista secundaria de monitoreo de solo lectura.
 - Sincronización local entre pestañas mediante localStorage.
+- Integración con Amazon API Gateway.
+- Integración con AWS Lambda en modo simulado.
+- Envío real de comandos desde GitHub Pages hacia AWS.
 
 ## Arquitectura planeada
 
@@ -56,6 +59,23 @@ Arduino UNO R3 + shield de motores
       │
       ▼
 Motores, servo y sensores
+```
+
+## Estado de integración con AWS
+
+Actualmente el proyecto ya cuenta con una primera integración funcional con AWS:
+
+```text
+GitHub Pages
+      │
+      ▼
+Amazon API Gateway
+      │
+      ▼
+AWS Lambda
+      │
+      ▼
+Respuesta simulada del carrito
 ```
 
 ## Funciones del panel principal
@@ -167,12 +187,15 @@ Estos archivos contendrán posteriormente:
 
 ## Próximas etapas
 
+- Documentar configuración de API Gateway y Lambda.
+- Configurar AWS IoT Core.
+- Crear Thing para el carrito.
+- Crear certificados X.509 para ESP32.
+- Definir política IoT con permisos mínimos.
+- Publicar comandos desde Lambda hacia AWS IoT Core.
 - Validar físicamente el kit cuando llegue.
 - Identificar el controlador integrado de motores.
 - Probar el firmware oficial.
-- Configurar AWS IoT Core.
-- Crear una función AWS Lambda.
-- Crear un endpoint en API Gateway.
 - Integrar el módulo ESP32 con MQTT.
 - Sustituir telemetría simulada por datos reales.
 - Integrar la cámara.
