@@ -2,7 +2,7 @@
 
 Proyecto de carrito IoT controlado desde una interfaz web adaptable a celular y computadora.
 
-La solución utiliza una página web publicada mediante GitHub Pages. La arquitectura planeada incorpora Amazon API Gateway, AWS Lambda y AWS IoT Core para enviar comandos al módulo ESP32 del vehículo.
+La solución utiliza una página web publicada mediante GitHub Pages. La arquitectura actual ya integra Amazon API Gateway y AWS Lambda en modo simulado. La arquitectura planeada incorporará AWS IoT Core para enviar comandos al módulo ESP32 del vehículo.
 
 ## Demostración web
 
@@ -37,6 +37,33 @@ Etapa web y backend simulado completada:
 - Integración con AWS Lambda en modo simulado.
 - Envío real de comandos desde GitHub Pages hacia AWS.
 
+## Arquitectura actual implementada
+
+```text
+GitHub Pages
+      │
+      ▼
+Amazon API Gateway
+      │
+      ▼
+AWS Lambda
+      │
+      ▼
+Respuesta simulada del carrito
+```
+
+Actualmente esta etapa permite validar:
+
+- Publicación web mediante GitHub Pages.
+- Peticiones HTTP POST desde el navegador.
+- Configuración CORS.
+- Invocación de Lambda desde API Gateway.
+- Validación de comandos en Lambda.
+- Respuesta JSON simulada.
+- Actualización del dashboard con la respuesta de AWS.
+
+Esta etapa todavía no controla hardware físico.
+
 ## Arquitectura planeada
 
 ```text
@@ -63,19 +90,42 @@ Motores, servo y sensores
 
 ## Estado de integración con AWS
 
-Actualmente el proyecto ya cuenta con una primera integración funcional con AWS:
+La ruta configurada en API Gateway es:
 
 ```text
-GitHub Pages
-      │
-      ▼
-Amazon API Gateway
-      │
-      ▼
-AWS Lambda
-      │
-      ▼
-Respuesta simulada del carrito
+POST /commands
+```
+
+El cuerpo enviado desde el panel web tiene este formato:
+
+```json
+{
+  "action": "adelante",
+  "speed": 60,
+  "timestamp": 1780459200000
+}
+```
+
+La respuesta simulada de Lambda tiene este formato:
+
+```json
+{
+  "ok": true,
+  "state": {
+    "online": true,
+    "movement": "adelante",
+    "speed": 60,
+    "distanceCm": 100,
+    "mode": "AWS Lambda Simulada",
+    "updatedAt": 1780459200500
+  }
+}
+```
+
+La función Lambda se encuentra documentada en:
+
+```text
+aws/lambda/publish-command.mjs
 ```
 
 ## Funciones del panel principal
@@ -108,6 +158,7 @@ El dashboard permite:
 iot-smart-car-aws/
 ├── aws/
 │   ├── lambda/
+│   │   └── publish-command.mjs
 │   └── policies/
 │
 ├── diagrams/
@@ -165,6 +216,26 @@ docs/index.html
 Open with Live Server
 ```
 
+## Cambiar entre simulador local y AWS
+
+El archivo encargado de seleccionar el modo de operación es:
+
+```text
+docs/js/api.js
+```
+
+Para usar la API real:
+
+```javascript
+const API_MODE = "aws";
+```
+
+Para regresar al simulador local:
+
+```javascript
+const API_MODE = "simulator";
+```
+
 ## Seguridad
 
 Los siguientes archivos nunca deben subirse al repositorio:
@@ -184,6 +255,8 @@ Estos archivos contendrán posteriormente:
 - Certificados X.509.
 - Claves privadas.
 - Configuración sensible de AWS.
+
+La URL pública de API Gateway no debe considerarse un mecanismo de seguridad. Más adelante se agregará autenticación y permisos más restrictivos.
 
 ## Próximas etapas
 
