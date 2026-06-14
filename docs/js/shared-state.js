@@ -14,7 +14,7 @@ const STORAGE_KEYS = {
 const DEFAULT_CAR_STATE = {
   online: true,
   movement: "detener",
-  speed: 0,
+  speed: 60,
   distanceCm: 100,
   mode: "Simulación",
   updatedAt: Date.now()
