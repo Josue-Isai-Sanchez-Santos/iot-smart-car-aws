@@ -1,20 +1,16 @@
 /*
   api.js
-  Archivo adaptador para enviar comandos al vehículo.
-  - `API_MODE` controla si usamos el simulador local o la conexión real a AWS.
-  - `sendCarCommand(action, speed)` prepara el objeto comando y lo envía
-    al destino correspondiente.
+  Adaptador para enviar comandos al vehículo.
+
+  Modos disponibles:
+  - simulator: usa simulación local
+  - aws: envía comandos a API Gateway + Lambda
 */
 
-// Modo actual: 'simulator' usa el objeto `simulator` definido en simulator.js
-const API_MODE = "simulator";
+const API_MODE = "aws";
 
-/**
- * Envía un comando al vehículo (simulado o real).
- * @param {string} action - acción como 'adelante', 'atras', 'izquierda', etc.
- * @param {number} speed - velocidad en porcentaje (0-100)
- * @returns respuesta del backend / simulador con el estado actualizado
- */
+const API_URL = "https://izuptepuj7.execute-api.us-east-2.amazonaws.com/commands";
+
 async function sendCarCommand(action, speed) {
   const command = {
     action,
@@ -22,11 +18,27 @@ async function sendCarCommand(action, speed) {
     timestamp: Date.now()
   };
 
-  // Si estamos en modo simulador, delegamos en el objeto `simulator`.
   if (API_MODE === "simulator") {
     return simulator.sendCommand(command);
   }
 
-  // Si se añadiera integración con AWS, aquí iría la lógica de red.
-  throw new Error("La conexión con AWS todavía no está configurada.");
+  if (API_MODE === "aws") {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(command)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error ?? "Error al enviar comando a AWS");
+    }
+
+    return data;
+  }
+
+  throw new Error("API_MODE no válido.");
 }

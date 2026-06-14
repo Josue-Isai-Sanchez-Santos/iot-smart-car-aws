@@ -117,13 +117,17 @@ function updateDashboard(response) {
   speedValue.textContent = state.speed;
   distanceValue.textContent = state.distanceCm;
 
-  saveCarState({
-    online: true,
-    movement: state.movement,
-    speed: state.speed,
-    distanceCm: state.distanceCm,
-    mode: "Simulación"
-  });
+  document.getElementById("mode-value").textContent = state.mode ?? "Simulación";
+
+saveCarState({
+  online: state.online ?? true,
+  movement: state.movement,
+  speed: state.speed,
+  distanceCm: state.distanceCm,
+  mode: state.mode ?? "Simulación"
+});
+
+renderControlHistory();
 }
 
 /**
@@ -267,13 +271,3 @@ document.addEventListener("visibilitychange", () => {
     stopMovement();
   }
 });
-
-saveCarState({
-  online: true,
-  movement: simulator.state.movement,
-  speed: simulator.state.speed,
-  distanceCm: simulator.state.distanceCm,
-  mode: "Simulación"
-});
-
-renderControlHistory();
