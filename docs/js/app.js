@@ -36,9 +36,13 @@ const keyMap = {
 };
 
 // --- Estado local de control ---
-let currentAction = "detener"; // acción actual enviada
-let activeKey = null;           // tecla física que mantiene la acción
+let currentAction = "detener"; // acción actual enviada al simulador
+let activeKey = null;           // tecla física que mantiene la acción activa
 let heartbeatInterval = null;   // intervalo que reenvía comandos mientras se mantiene la acción
+
+// Historial de comandos compartido entre la UI y el almacenamiento local.
+// Se carga inicialmente desde localStorage para mostrar el historial guardado.
+let sharedHistory = getCommandHistory();
 
 /**
  * Devuelve la velocidad seleccionada en el control deslizante como número.
@@ -64,28 +68,47 @@ function translateAction(action) {
 }
 
 /**
- * Añade una entrada al historial de comandos en pantalla.
- * Si el historial está vacío (mensaje por defecto), lo limpia antes.
+ * Renderiza el historial de comandos en pantalla.
+ * Si no hay entradas, muestra un mensaje por defecto.
  */
-function addHistory(action, speed) {
-  if (commandHistory.children.length === 1 &&
-      commandHistory.firstElementChild.textContent ===
-        "No se han enviado comandos.") {
-    commandHistory.innerHTML = "";
+function renderControlHistory() {
+  if (sharedHistory.length === 0) {
+    commandHistory.innerHTML = "<li>No se han enviado comandos.</li>";
+    return;
   }
 
-  const item = document.createElement("li");
-  const time = new Date().toLocaleTimeString();
+  commandHistory.innerHTML = "";
 
-  item.textContent =
-    `${time} — ${translateAction(action)} — ${speed} %`;
+  sharedHistory.forEach((entry) => {
+    const item = document.createElement("li");
 
-  // Prepend para que lo más reciente quede arriba
-  commandHistory.prepend(item);
+    item.textContent =
+      `${entry.time} — ${translateAction(entry.action)} — ${entry.speed} %`;
+
+    commandHistory.appendChild(item);
+  });
 }
 
 /**
- * Actualiza los valores visibles del dashboard a partir de la respuesta recibida.
+ * Añade una nueva entrada al historial compartido y la guarda en localStorage.
+ * Luego vuelve a renderizar la lista para mostrar el nuevo comando.
+ */
+function addHistory(action, speed) {
+  const entry = {
+    time: new Date().toLocaleTimeString(),
+    action,
+    speed,
+    createdAt: Date.now()
+  };
+
+  sharedHistory.unshift(entry);
+  sharedHistory = saveCommandHistory(sharedHistory);
+
+  renderControlHistory();
+}
+
+/**
+ * Actualiza los valores visibles del dashboard y guarda el estado actual del auto.
  */
 function updateDashboard(response) {
   const state = response.state;
@@ -93,6 +116,14 @@ function updateDashboard(response) {
   movementValue.textContent = translateAction(state.movement);
   speedValue.textContent = state.speed;
   distanceValue.textContent = state.distanceCm;
+
+  saveCarState({
+    online: true,
+    movement: state.movement,
+    speed: state.speed,
+    distanceCm: state.distanceCm,
+    mode: "Simulación"
+  });
 }
 
 /**
@@ -198,9 +229,11 @@ speedRange.addEventListener("input", () => {
   }
 });
 
-// Limpiar historial
 clearHistoryButton.addEventListener("click", () => {
-  commandHistory.innerHTML = "<li>No se han enviado comandos.</li>";
+  // Borra el historial en memoria, en localStorage y actualiza la vista.
+  sharedHistory = [];
+  clearSharedHistory();
+  renderControlHistory();
 });
 
 // --- Manejo de teclado: iniciar movimiento con keydown y detener con keyup ---
@@ -234,3 +267,13 @@ document.addEventListener("visibilitychange", () => {
     stopMovement();
   }
 });
+
+saveCarState({
+  online: true,
+  movement: simulator.state.movement,
+  speed: simulator.state.speed,
+  distanceCm: simulator.state.distanceCm,
+  mode: "Simulación"
+});
+
+renderControlHistory();

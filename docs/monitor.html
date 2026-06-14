@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+  monitor.html
+  Interfaz de solo lectura para monitorear el estado compartido del carrito.
+  Los datos se obtienen de localStorage a través de shared-state.js y monitor.js.
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Smart Car Monitor</title>
+
+  <!-- Estilos compartidos con el panel de control -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Smart Car Monitor</h1>
+      <p>Vista de monitoreo IoT de solo lectura</p>
+    </div>
+
+    <!-- Estado global de la conexión / simulación -->
+    <div id="monitor-status" class="status status-online">
+      <span class="status-dot"></span>
+      Simulación activa
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <!-- Sección de cámara: placeholder mientras no hay transmisión real -->
+    <section class="card camera-card">
+      <div class="card-header">
+        <h2>Cámara</h2>
+      </div>
+
+      <div class="camera-placeholder">
+        <span>Transmisión de video pendiente</span>
+      </div>
+    </section>
+
+    <!-- Sección de telemetría con valores que se actualizan desde monitor.js -->
+    <section class="card telemetry-card">
+      <div class="card-header">
+        <h2>Telemetría</h2>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-item">
+          <span class="telemetry-label">Movimiento</span>
+          <strong id="monitor-movement">Detenido</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span class="telemetry-label">Velocidad</span>
+          <strong><span id="monitor-speed">0</span> %</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span class="telemetry-label">Distancia frontal</span>
+          <strong><span id="monitor-distance">100</span> cm</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span class="telemetry-label">Modo</span>
+          <strong id="monitor-mode">Simulación</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span class="telemetry-label">Última actualización</span>
+          <strong id="monitor-updated-at">--:--:--</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Historial de comandos ejecutados desde el panel de control -->
+    <section class="card history-card">
+      <div class="card-header">
+        <h2>Historial de comandos</h2>
+      </div>
+
+      <ul id="monitor-history" class="command-history">
+        <li>No se han enviado comandos.</li>
+      </ul>
+    </section>
+
+    <!-- Sección de acceso indica que esta vista no puede controlar el carrito -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Acceso</h2>
+      </div>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-item">
+          <span class="telemetry-label">
+            Esta vista no permite controlar el carrito.
+          </span>
+
+          <strong>
+            <a href="index.html">Abrir panel de control</a>
+          </strong>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Carga la lógica de estado compartido y la vista de monitorización -->
+  <script src="js/shared-state.js"></script>
+  <script src="js/monitor.js"></script>
+</body>
+</html>
