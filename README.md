@@ -1,5 +1,7 @@
 # IoT Smart Car AWS
 
+Proyecto aun en Desarroyo
+
 Proyecto de carrito IoT controlado desde una interfaz web adaptable a celular y computadora.
 
 La solución utiliza una página web publicada mediante GitHub Pages. La arquitectura actual ya integra Amazon API Gateway y AWS Lambda en modo simulado. La arquitectura planeada incorporará AWS IoT Core para enviar comandos al módulo ESP32 del vehículo.
