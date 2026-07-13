@@ -289,3 +289,8 @@ https://github.com/Josue-Isai-Sanchez-Santos/Iot-car-monitor
 ```
 
 Los repositorios anteriores se conservan como evidencia de la evolución del proyecto.
+
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia MIT. Consulta el archivo [LICENSE](LICENSE) para obtener más información.
